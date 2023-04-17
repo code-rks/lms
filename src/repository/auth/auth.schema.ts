@@ -4,11 +4,22 @@ export type AuthDocument = Auth & Document;
 
 @Schema({ collection: 'auth', timestamps: true })
 export class Auth {
+  // User Properties
   @Prop()
-  username: string;
+  firstName: string; //required
 
   @Prop()
-  email: string;
+  lastName: string;
+
+  @Prop()
+  phoneNumber: string;
+
+  @Prop()
+  email: string; //required unique
+
+  // Auth Properties
+  @Prop()
+  username: string; //required unique
 
   @Prop()
   password: string;
