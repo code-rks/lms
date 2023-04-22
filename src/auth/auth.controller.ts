@@ -33,7 +33,10 @@ export class AuthController {
   }
 
   @Put('/user/:userId')
-  async updateUser(@Param('userId') userId: string, @Body() auth: IAuth): Promise<IAuth> {
+  async updateUser(
+    @Param('userId') userId: string,
+    @Body() auth: IAuth,
+  ): Promise<IAuth> {
     const user = await this.authService.updateUser(userId, auth);
     return user;
   }

@@ -21,17 +21,19 @@ export class MongoAuthRepository implements IAuthRepository {
   }
 
   async getUser(userId: string): Promise<IAuth> {
-    const user = await this.model.findOne({userId}).lean();
+    const user = await this.model.findOne({ userId }).lean();
     return await this.transformFromModel(user);
   }
 
   async updateUser(userId: string, user: IAuth): Promise<IAuth> {
-    const updatedUser = await this.model.findOneAndUpdate({userId}, { ...user },{new: true}).lean();
+    const updatedUser = await this.model
+      .findOneAndUpdate({ userId }, { ...user }, { new: true })
+      .lean();
     return await this.transformFromModel(updatedUser);
   }
 
   async findUserUsingUsernameAndPassword(username: string, password: string) {
-    const user = await this.model.findOne({username, password}).lean();
+    const user = await this.model.findOne({ username, password }).lean();
     return await this.transformFromModel(user);
   }
 
@@ -48,7 +50,7 @@ export class MongoAuthRepository implements IAuthRepository {
   }
 
   async transformFromModel(auth: Auth): Promise<IAuth> {
-    if(!auth) return null;
+    if (!auth) return null;
     return {
       userId: auth.userId,
       firstName: auth.firstName,

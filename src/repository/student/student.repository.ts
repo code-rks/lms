@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ILead } from 'src/lead/interface/ILead';
 import { BLOOD_GROUP, CLASS, GENDER, SECTION } from 'src/common/types';
 import { IStudentRepository } from 'src/student/interface/IStudentRepository';
 import { Student, StudentDocument } from './student.schema';
@@ -74,9 +73,7 @@ export class MongoStudentRepository implements IStudentRepository {
     students: StudentDocument[],
   ): Promise<IStudent[]> {
     return Promise.all(
-      students.map(
-        async (student) => await this.transformFromModel(student),
-      ),
+      students.map(async (student) => await this.transformFromModel(student)),
     );
   }
 }

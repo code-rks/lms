@@ -1,19 +1,18 @@
-import { Injectable } from "@nestjs/common";
-import { IConfiguration } from "./interface/IConfiguration";
-import { ConfigService } from "@nestjs/config";
+import { Injectable } from '@nestjs/common';
+import { IConfiguration } from './interface/IConfiguration';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export default class Configuration implements IConfiguration {
-
-port: Number;
-databaseUrl: string;
-jwtAuthSecret: string;
-jwtAuthExpiry: string;
-jwtRefreshSecret: string;
-jwtRefreshExpiry: string;
+  port: number;
+  databaseUrl: string;
+  jwtAuthSecret: string;
+  jwtAuthExpiry: string;
+  jwtRefreshSecret: string;
+  jwtRefreshExpiry: string;
 
   constructor(configService: ConfigService) {
-    this.port = configService.get<Number>('PORT');
+    this.port = configService.get<number>('PORT');
     this.databaseUrl = configService.get<string>('DATABASE_URL');
     this.jwtAuthSecret = configService.get<string>('JWT_AUTH_SECRET');
     this.jwtAuthExpiry = configService.get<string>('JWT_AUTH_EXPIRY');
