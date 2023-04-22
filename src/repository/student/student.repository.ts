@@ -14,21 +14,21 @@ export class MongoStudentRepository implements IStudentRepository {
   ) {}
 
   async createStudent(student: IStudent): Promise<IStudent> {
-    const document = await this.transformStudentToModel(student);
+    const document = await this.transformToModel(student);
     const savedDocument = await document.save();
-    return await this.transformModelToStudent(savedDocument);
+    return await this.transformFromModel(savedDocument);
   }
   async listStudents(): Promise<IStudent[]> {
     const students = await this.model.find().lean();
-    return await this.transformArrayModelToStudent(students);
+    return await this.transformFromArrayModel(students);
   }
 
   async getStudent(studentId: string): Promise<IStudent> {
     const students = await this.model.findOne({ studentId: studentId }).lean();
-    return await this.transformModelToStudent(students);
+    return await this.transformFromModel(students);
   }
 
-  async transformStudentToModel(student: IStudent): Promise<StudentDocument> {
+  async transformToModel(student: IStudent): Promise<StudentDocument> {
     return await this.model.create({
       studentId: student.studentId,
       firstName: student.firstName,
@@ -49,7 +49,7 @@ export class MongoStudentRepository implements IStudentRepository {
     });
   }
 
-  async transformModelToStudent(student: StudentDocument): Promise<IStudent> {
+  async transformFromModel(student: StudentDocument): Promise<IStudent> {
     return {
       studentId: student.studentId,
       firstName: student.firstName,
@@ -70,12 +70,12 @@ export class MongoStudentRepository implements IStudentRepository {
     };
   }
 
-  async transformArrayModelToStudent(
+  async transformFromArrayModel(
     students: StudentDocument[],
   ): Promise<IStudent[]> {
     return Promise.all(
       students.map(
-        async (student) => await this.transformModelToStudent(student),
+        async (student) => await this.transformFromModel(student),
       ),
     );
   }

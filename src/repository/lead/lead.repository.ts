@@ -10,21 +10,21 @@ import { CLASS } from 'src/common/types';
 export class MongoLeadRepository implements ILeadRepository {
   constructor(@InjectModel(Lead.name) private model: Model<LeadDocument>) {}
   async createLead(lead: ILead): Promise<ILead> {
-    const document = await this.transformLeadToModel(lead);
+    const document = await this.transformToModel(lead);
     const savedDocument = await document.save();
-    return await this.transformModelToLead(savedDocument);
+    return await this.transformFromModel(savedDocument);
   }
   async listLeads(): Promise<ILead[]> {
     const leads = await this.model.find().lean();
-    return await this.transformArrayModelToLead(leads);
+    return await this.transformFromArrayModel(leads);
   }
 
   async getLead(leadId: string): Promise<ILead> {
     const lead = await this.model.findOne({ leadId: leadId }).lean();
-    return await this.transformModelToLead(lead);
+    return await this.transformFromModel(lead);
   }
 
-  async transformLeadToModel(lead: ILead): Promise<LeadDocument> {
+  async transformToModel(lead: ILead): Promise<LeadDocument> {
     return await this.model.create({
       leadId: lead.leadId,
       name: lead.name,
@@ -42,7 +42,7 @@ export class MongoLeadRepository implements ILeadRepository {
     });
   }
 
-  async transformModelToLead(lead: LeadDocument): Promise<ILead> {
+  async transformFromModel(lead: LeadDocument): Promise<ILead> {
     return {
       leadId: lead.leadId,
       name: lead.name,
@@ -60,9 +60,9 @@ export class MongoLeadRepository implements ILeadRepository {
     };
   }
 
-  async transformArrayModelToLead(leads: LeadDocument[]): Promise<ILead[]> {
+  async transformFromArrayModel(leads: LeadDocument[]): Promise<ILead[]> {
     return Promise.all(
-      leads.map(async (lead) => await this.transformModelToLead(lead)),
+      leads.map(async (lead) => await this.transformFromModel(lead)),
     );
   }
 }

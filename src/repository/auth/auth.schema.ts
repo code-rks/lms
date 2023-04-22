@@ -4,9 +4,12 @@ export type AuthDocument = Auth & Document;
 
 @Schema({ collection: 'auth', timestamps: true })
 export class Auth {
+  @Prop({ index: true, unique: true, required: true })
+  userId: string;
+
   // User Properties
-  @Prop()
-  firstName: string; //required
+  @Prop({ required: true })
+  firstName: string;
 
   @Prop()
   lastName: string;
@@ -14,12 +17,12 @@ export class Auth {
   @Prop()
   phoneNumber: string;
 
-  @Prop()
-  email: string; //required unique
+  @Prop({ required: true, unique: true, index: true })
+  email: string;
 
   // Auth Properties
-  @Prop()
-  username: string; //required unique
+  @Prop({ required: true, unique: true, index: true })
+  username: string;
 
   @Prop()
   password: string;

@@ -31,10 +31,10 @@ export class Parent {
 export class Lead {
   // Student Properties
   @Prop({ index: true, unique: true })
-  leadId: string; // required, unique, index
+  leadId: string;
 
   @Prop({ required: true })
-  name: string; //required
+  name: string;
 
   @Prop({
     type: String,
