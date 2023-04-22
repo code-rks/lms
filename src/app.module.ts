@@ -5,6 +5,9 @@ import { TestModule } from './test/test.module';
 import { RepositoryModule } from './repository/repository.module';
 import { LeadModule } from './lead/lead.module';
 import { StudentModule } from './student/student.module';
+import Configuration from './common/Configuration';
+import { IConfiguration } from './common/interface/IConfiguration';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -15,6 +18,7 @@ import { StudentModule } from './student/student.module';
           }
         : {},
     ),
+    CommonModule,
     AuthModule,
     TestModule,
     RepositoryModule,
@@ -22,6 +26,8 @@ import { StudentModule } from './student/student.module';
     StudentModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+  ],
+  exports: [],
 })
 export class AppModule {}

@@ -2,6 +2,8 @@ import { Body, Controller, Get, Param, Post, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { IAuth } from './interface/IAuth';
 import { CreateUserDTO } from './DTO/CreateUserDTO';
+import { LoginDTO } from './DTO/LoginDTO';
+import { IToken } from './interface/IToken';
 
 @Controller('auth')
 export class AuthController {
@@ -34,5 +36,11 @@ export class AuthController {
   async updateUser(@Param('userId') userId: string, @Body() auth: IAuth): Promise<IAuth> {
     const user = await this.authService.updateUser(userId, auth);
     return user;
+  }
+
+  @Post('/user/login')
+  async loginUser(@Body() loginDto: LoginDTO): Promise<IToken> {
+    const token = await this.authService.loginUser(loginDto);
+    return token;
   }
 }

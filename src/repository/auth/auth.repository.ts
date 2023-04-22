@@ -30,6 +30,11 @@ export class MongoAuthRepository implements IAuthRepository {
     return await this.transformFromModel(updatedUser);
   }
 
+  async findUserUsingUsernameAndPassword(username: string, password: string) {
+    const user = await this.model.findOne({username, password}).lean();
+    return await this.transformFromModel(user);
+  }
+
   async transformToModel(auth: IAuth): Promise<AuthDocument> {
     return await this.model.create({
       userId: auth.userId,
@@ -43,6 +48,7 @@ export class MongoAuthRepository implements IAuthRepository {
   }
 
   async transformFromModel(auth: Auth): Promise<IAuth> {
+    if(!auth) return null;
     return {
       userId: auth.userId,
       firstName: auth.firstName,
