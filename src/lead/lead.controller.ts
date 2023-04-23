@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, Post } from '@nestjs/common';
 import { LeadService } from './lead.service';
 import { ILead } from './interface/ILead';
+import { IPaginate } from 'src/common/interface/IPaginate';
 
 @Controller('lead')
 export class LeadController {
@@ -28,5 +29,11 @@ export class LeadController {
   async createLead(@Body() lead: ILead): Promise<ILead> {
     const savedlead = await this.service.createLead(lead);
     return savedlead;
+  }
+
+  @Get('/paginate/:page')
+  async listPaginatedLeads(@Param('page') pageNumber: number, @Headers('x-page-size') pageSize: number): Promise<IPaginate<ILead>> {
+    const lead = await this.service.listPaginatedLeads(pageNumber, pageSize);
+    return lead;
   }
 }

@@ -1,5 +1,6 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import mongoose, { Document } from 'mongoose';
+import * as paginate from 'mongoose-paginate-v2';
 export type LeadDocument = Lead & Document;
 
 export class Visit {
@@ -76,3 +77,4 @@ export class Lead {
 }
 
 export const LeadSchema = SchemaFactory.createForClass(Lead);
+LeadSchema.plugin(paginate);

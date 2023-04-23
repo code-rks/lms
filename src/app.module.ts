@@ -13,11 +13,9 @@ import { AuthService } from './auth/auth.service';
 @Module({
   imports: [
     ConfigModule.forRoot(
-      process.env.NODE_ENV == 'dev' || !process.env.NODE_ENV
-        ? {
-            envFilePath: `.env.${process.env.NODE_ENV || 'local'}`,
-          }
-        : {},
+      {
+        envFilePath: `.env.${process.env.NODE_ENV || 'local'}`,
+      }
     ),
     CommonModule,
     AuthModule,

@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ILeadRepository } from './interface/ILeadRepository';
 import { ILead } from './interface/ILead';
 import { v4 as uuidv4 } from 'uuid';
+import { IPaginate } from 'src/common/interface/IPaginate';
 
 @Injectable()
 export class LeadService {
@@ -21,6 +22,10 @@ export class LeadService {
 
   listLeads = async (): Promise<ILead[]> => {
     return await this.repository.listLeads();
+  };
+
+  listPaginatedLeads = async (pageNumber: number, pageSize: number): Promise<IPaginate<ILead>> => {
+    return await this.repository.listPaginatedLeads(pageNumber, pageSize);
   };
 
   getLead = async (leadId: string): Promise<ILead> => {
