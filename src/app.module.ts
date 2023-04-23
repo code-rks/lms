@@ -6,6 +6,9 @@ import { RepositoryModule } from './repository/repository.module';
 import { LeadModule } from './lead/lead.module';
 import { StudentModule } from './student/student.module';
 import { CommonModule } from './common/common.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './common/guards/auth.guard';
+import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
@@ -24,7 +27,13 @@ import { CommonModule } from './common/common.module';
     StudentModule,
   ],
   controllers: [],
-  providers: [],
+  providers: [
+    AuthService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    }
+  ],
   exports: [],
 })
 export class AppModule {}

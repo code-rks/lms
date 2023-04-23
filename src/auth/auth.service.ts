@@ -4,10 +4,12 @@ import { IAuth } from './interface/IAuth';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDTO } from './DTO/CreateUserDTO';
 import { LoginDTO } from './DTO/LoginDTO';
-import { InvalidCredentialsException } from 'src/common/exceptions/AuthExceptions';
-import { sign } from 'jsonwebtoken';
+import { InvalidCredentialsException, InvalidTokenException } from 'src/common/exceptions/AuthExceptions';
+import * as jwt from 'jsonwebtoken';
 import { IConfiguration } from 'src/common/interface/IConfiguration';
 import { IToken } from './interface/IToken';
+import { TOKEN } from 'src/common/types';
+import { InvalidArgumentException } from 'src/common/exceptions/GenericExceptions';
 
 @Injectable()
 export class AuthService {
@@ -54,16 +56,52 @@ export class AuthService {
       );
     if (loggedInUser == null) throw new InvalidCredentialsException();
     const token: IToken = {
-      authToken: this.generateAuthToken(loggedInUser),
-      refreshToken: this.generateRefreshToken(loggedInUser),
+      authToken: this.generateAuthToken(loggedInUser.userId),
+      refreshToken: this.generateRefreshToken(loggedInUser.userId),
     };
     return token;
   };
 
-  private generateAuthToken(loggedInUser: IAuth): string {
-    return sign(
+  validate = async (authToken: string): Promise<IAuth> => {
+    let userId = await this.validateToken(authToken, TOKEN.AUTH);
+    return this.getUser(userId);
+  }
+
+  validateToken = async (token: string, type: TOKEN) : Promise<string> => {
+    let decodedToken: any;
+    let secret = this.getSecret(type);
+    try{
+      decodedToken = jwt.verify(token, secret);
+    } catch (e) {
+      console.error(e)
+      throw new InvalidTokenException();
+    }
+    return decodedToken.userId;
+  }
+
+  refreshTokens = async (refreshToken: string) : Promise<IToken> => {
+    const userId = await this.validateToken(refreshToken, TOKEN.REFRESH);
+    return {
+      authToken: this.generateAuthToken(userId),
+      refreshToken: refreshToken,
+    }
+  }
+
+  private getSecret(tokenType: TOKEN): string {
+    switch (tokenType) {
+      case TOKEN.AUTH:
+        return this.configuration.jwtAuthSecret;
+      case TOKEN.REFRESH:
+        return this.configuration.jwtRefreshSecret;
+      default:
+        throw new InvalidArgumentException('TokenType');
+    }
+  }
+
+  private generateAuthToken(userId: string): string {
+    return jwt.sign(
       {
-        userId: loggedInUser.userId,
+        userId: userId,
       },
       this.configuration.jwtAuthSecret,
       {
@@ -72,15 +110,15 @@ export class AuthService {
     );
   }
 
-  private generateRefreshToken(loggedInUser: IAuth): string {
-    return sign(
+  private generateRefreshToken(userId: string): string {
+    return jwt.sign(
       {
-        userId: loggedInUser.userId,
+        userId: userId,
       },
       this.configuration.jwtRefreshSecret,
       {
         expiresIn: this.configuration.jwtRefreshExpiry,
       },
     );
-  }
+  }  
 }

@@ -26,3 +26,8 @@ export enum GENDER {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
 }
+
+export enum TOKEN {
+  AUTH,
+  REFRESH,
+}
