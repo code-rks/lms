@@ -11,8 +11,8 @@ import { extractMetaInfoFromPaginateModel } from '../utils';
 @Injectable()
 export class MongoLeadRepository implements ILeadRepository {
   constructor(
-    @InjectModel(Lead.name) private model: Model<LeadDocument>, 
-    @InjectModel(Lead.name) private paginateModel: PaginateModel<LeadDocument>
+    @InjectModel(Lead.name) private model: Model<LeadDocument>,
+    @InjectModel(Lead.name) private paginateModel: PaginateModel<LeadDocument>,
   ) {}
 
   async createLead(lead: ILead): Promise<ILead> {
@@ -30,22 +30,32 @@ export class MongoLeadRepository implements ILeadRepository {
     return await this.transformFromModel(lead);
   }
 
-  async listPaginatedLeads(pageNumber: number, pageSize: number): Promise<IPaginate<ILead>> {
-    const leads = await this.paginateModel.paginate({}, { useEstimatedCount: true, limit: pageSize, page: pageNumber})
+  async listPaginatedLeads(
+    pageNumber: number,
+    pageSize: number,
+  ): Promise<IPaginate<ILead>> {
+    const leads = await this.paginateModel.paginate(
+      {},
+      { useEstimatedCount: true, limit: pageSize, page: pageNumber },
+    );
     return await this.transformFromPaginatedModel(leads);
   }
 
-  async transformFromPaginatedModel(model: PaginateResult<LeadDocument>): Promise<IPaginate<ILead>>{
+  async transformFromPaginatedModel(
+    model: PaginateResult<LeadDocument>,
+  ): Promise<IPaginate<ILead>> {
     return {
       docs: await this.transformFromArrayModel(model.docs),
       meta: extractMetaInfoFromPaginateModel(model),
-    }
+    };
   }
 
   async transformToModel(lead: ILead): Promise<LeadDocument> {
     return await this.model.create({
       leadId: lead.leadId,
-      name: lead.name,
+      firstName: lead.firstName,
+      middleName: lead.middleName,
+      lastName: lead.lastName,
       class: lead.class,
       dateOfBirth: lead.dateOfBirth,
       residentialAddress: lead.residentialAddress,
@@ -63,7 +73,9 @@ export class MongoLeadRepository implements ILeadRepository {
   async transformFromModel(lead: LeadDocument): Promise<ILead> {
     return {
       leadId: lead.leadId,
-      name: lead.name,
+      firstName: lead.firstName,
+      middleName: lead.middleName,
+      lastName: lead.lastName,
       class: CLASS[lead.class],
       dateOfBirth: lead.dateOfBirth,
       residentialAddress: lead.residentialAddress,

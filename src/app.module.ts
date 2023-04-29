@@ -12,11 +12,9 @@ import { AuthService } from './auth/auth.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(
-      {
-        envFilePath: `.env.${process.env.NODE_ENV || 'local'}`,
-      }
-    ),
+    ConfigModule.forRoot({
+      envFilePath: `.env.${process.env.NODE_ENV || 'local'}`,
+    }),
     CommonModule,
     AuthModule,
     TestModule,
@@ -30,7 +28,7 @@ import { AuthService } from './auth/auth.service';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    }
+    },
   ],
   exports: [],
 })

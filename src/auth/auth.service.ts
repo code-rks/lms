@@ -4,7 +4,10 @@ import { IAuth } from './interface/IAuth';
 import { v4 as uuidv4 } from 'uuid';
 import { CreateUserDTO } from './DTO/CreateUserDTO';
 import { LoginDTO } from './DTO/LoginDTO';
-import { InvalidCredentialsException, InvalidTokenException } from 'src/common/exceptions/AuthExceptions';
+import {
+  InvalidCredentialsException,
+  InvalidTokenException,
+} from 'src/common/exceptions/AuthExceptions';
 import * as jwt from 'jsonwebtoken';
 import { IConfiguration } from 'src/common/interface/IConfiguration';
 import { IToken } from './interface/IToken';
@@ -63,29 +66,29 @@ export class AuthService {
   };
 
   validate = async (authToken: string): Promise<IAuth> => {
-    let userId = await this.validateToken(authToken, TOKEN.AUTH);
+    const userId = await this.validateToken(authToken, TOKEN.AUTH);
     return this.getUser(userId);
-  }
+  };
 
-  validateToken = async (token: string, type: TOKEN) : Promise<string> => {
+  validateToken = async (token: string, type: TOKEN): Promise<string> => {
     let decodedToken: any;
-    let secret = this.getSecret(type);
-    try{
+    const secret = this.getSecret(type);
+    try {
       decodedToken = jwt.verify(token, secret);
     } catch (e) {
-      console.error(e)
+      console.error(e);
       throw new InvalidTokenException();
     }
     return decodedToken.userId;
-  }
+  };
 
-  refreshTokens = async (refreshToken: string) : Promise<IToken> => {
+  refreshTokens = async (refreshToken: string): Promise<IToken> => {
     const userId = await this.validateToken(refreshToken, TOKEN.REFRESH);
     return {
       authToken: this.generateAuthToken(userId),
       refreshToken: refreshToken,
-    }
-  }
+    };
+  };
 
   private getSecret(tokenType: TOKEN): string {
     switch (tokenType) {
@@ -120,5 +123,5 @@ export class AuthService {
         expiresIn: this.configuration.jwtRefreshExpiry,
       },
     );
-  }  
+  }
 }

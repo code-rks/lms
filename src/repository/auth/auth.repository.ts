@@ -32,7 +32,10 @@ export class MongoAuthRepository implements IAuthRepository {
     return await this.transformFromModel(updatedUser);
   }
 
-  async findUserUsingUsernameAndPassword(username: string, password: string): Promise<IAuth> {
+  async findUserUsingUsernameAndPassword(
+    username: string,
+    password: string,
+  ): Promise<IAuth> {
     const user = await this.model.findOne({ username, password }).lean();
     return await this.transformFromModel(user);
   }

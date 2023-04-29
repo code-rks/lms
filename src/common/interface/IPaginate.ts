@@ -1,17 +1,16 @@
 export interface IPaginate<T> {
-    docs: T[];
-    meta: PaginateMeta;
+  docs: T[];
+  meta: PaginateMeta;
 }
 
 export interface PaginateMeta {
-    totalDocs: Number;
-    pageSize: Number;
-    totalPages: Number;
-    currentPage: Number;
-    pagingCounter: Number;
-    hasPrevPage: boolean;
-    hasNextPage: boolean;
-    prevPageNumber: Number;
-    nextPageNumber: Number;
+  totalDocs: number;
+  pageSize: number;
+  totalPages: number;
+  currentPage: number;
+  pagingCounter: number;
+  hasPrevPage: boolean;
+  hasNextPage: boolean;
+  prevPageNumber: number;
+  nextPageNumber: number;
 }
-

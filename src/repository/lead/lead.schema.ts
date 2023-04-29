@@ -1,5 +1,5 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
-import mongoose, { Document } from 'mongoose';
+import { Document } from 'mongoose';
 import * as paginate from 'mongoose-paginate-v2';
 export type LeadDocument = Lead & Document;
 
@@ -31,11 +31,17 @@ export class Parent {
 @Schema({ collection: 'lead', timestamps: true })
 export class Lead {
   // Student Properties
-  @Prop({ index: true, unique: true })
+  @Prop({ index: true, unique: true, required: true })
   leadId: string;
 
   @Prop({ required: true })
-  name: string;
+  firstName: string;
+
+  @Prop()
+  middleName: string;
+
+  @Prop()
+  lastName: string;
 
   @Prop({
     type: String,
