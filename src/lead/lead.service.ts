@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { IPaginate } from 'src/common/interface/IPaginate';
 import { LeadDTO } from './DTO/LeadDTO';
 import { transformLeadDtoToInterface } from './transformers/lead.transform';
+import { UpdateLeadDTO } from './DTO/UpdateLeadDTO';
 
 @Injectable()
 export class LeadService {
@@ -36,5 +37,9 @@ export class LeadService {
 
   getLead = async (leadId: string): Promise<ILead> => {
     return await this.repository.getLead(leadId);
+  };
+
+  updateLead = async (leadId: string, lead: UpdateLeadDTO): Promise<ILead> => {
+    return await this.repository.updateLead(leadId, { ...lead });
   };
 }

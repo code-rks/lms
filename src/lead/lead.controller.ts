@@ -1,8 +1,18 @@
-import { Body, Controller, Get, Headers, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { LeadService } from './lead.service';
 import { ILead } from './interface/ILead';
 import { IPaginate } from 'src/common/interface/IPaginate';
 import { LeadDTO } from './DTO/LeadDTO';
+import { UpdateLeadDTO } from './DTO/UpdateLeadDTO';
+import { QueryRequired } from 'src/common/decorators/requiredquery.decorator';
 
 @Controller('lead')
 export class LeadController {
@@ -21,7 +31,7 @@ export class LeadController {
   }
 
   @Get()
-  async getLead(@Param('leadId') leadId: string): Promise<ILead> {
+  async getLead(@QueryRequired('leadId') leadId: string): Promise<ILead> {
     const lead = await this.service.getLead(leadId);
     return lead;
   }
@@ -35,9 +45,18 @@ export class LeadController {
   @Get('/page/:page')
   async listPaginatedLeads(
     @Param('page') pageNumber: number,
-    @Headers('x-page-size') pageSize: number,
+    @Headers('x-page-size') pageSize = 10,
   ): Promise<IPaginate<ILead>> {
     const lead = await this.service.listPaginatedLeads(pageNumber, pageSize);
     return lead;
+  }
+
+  @Put('/:leadId')
+  async updateLead(
+    @Body() lead: UpdateLeadDTO,
+    @Param('leadId') leadId: string,
+  ): Promise<ILead> {
+    const savedlead = await this.service.updateLead(leadId, lead);
+    return savedlead;
   }
 }

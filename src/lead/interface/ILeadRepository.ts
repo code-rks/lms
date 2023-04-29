@@ -9,6 +9,7 @@ export interface ILeadRepository {
     pageSize: number,
   ): Promise<IPaginate<ILead>>;
   getLead(leadId: string): Promise<ILead>;
+  updateLead(leadId: string, lead: Partial<ILead>): Promise<ILead>;
 }
 
 export const ILeadRepository = Symbol('ILeadRepository');

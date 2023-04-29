@@ -20,6 +20,7 @@ export class MongoLeadRepository implements ILeadRepository {
     const savedDocument = await document.save();
     return await this.transformFromModel(savedDocument);
   }
+
   async listLeads(): Promise<ILead[]> {
     const leads = await this.model.find().lean();
     return await this.transformFromArrayModel(leads);
@@ -39,6 +40,15 @@ export class MongoLeadRepository implements ILeadRepository {
       { useEstimatedCount: true, limit: pageSize, page: pageNumber },
     );
     return await this.transformFromPaginatedModel(leads);
+  }
+
+  async updateLead(leadId: string, lead: Partial<ILead>): Promise<ILead> {
+    const updatedDocument = await this.model.findOneAndUpdate(
+      { leadId: leadId },
+      { ...lead },
+      { new: true },
+    );
+    return await this.transformFromModel(updatedDocument);
   }
 
   async transformFromPaginatedModel(
@@ -72,21 +82,21 @@ export class MongoLeadRepository implements ILeadRepository {
 
   async transformFromModel(lead: LeadDocument): Promise<ILead> {
     return {
-      leadId: lead.leadId,
-      firstName: lead.firstName,
-      middleName: lead.middleName,
-      lastName: lead.lastName,
-      class: CLASS[lead.class],
-      dateOfBirth: lead.dateOfBirth,
-      residentialAddress: lead.residentialAddress,
-      father: lead.father,
-      mother: lead.mother,
-      leadSource: lead.leadSource,
-      notes: lead.notes,
-      status: lead.status,
-      studentId: lead.studentId,
-      createdBy: lead.createdBy,
-      visits: lead.visits,
+      leadId: lead?.leadId,
+      firstName: lead?.firstName,
+      middleName: lead?.middleName,
+      lastName: lead?.lastName,
+      class: CLASS[lead?.class],
+      dateOfBirth: lead?.dateOfBirth,
+      residentialAddress: lead?.residentialAddress,
+      father: lead?.father,
+      mother: lead?.mother,
+      leadSource: lead?.leadSource,
+      notes: lead?.notes,
+      status: lead?.status,
+      studentId: lead?.studentId,
+      createdBy: lead?.createdBy,
+      visits: lead?.visits,
     };
   }
 
