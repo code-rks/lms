@@ -22,6 +22,7 @@ export interface ILead {
 }
 
 export interface IVisit {
+  visitId: string;
   visitDate: Date;
   notes: string;
   addressedBy: string;

@@ -29,6 +29,8 @@ export class ParentDTO {
 }
 
 export class VisitDTO {
+  visitId: string;
+
   @IsDateString()
   visitDate: Date;
 
@@ -36,7 +38,7 @@ export class VisitDTO {
   notes: string;
 
   @IsNotEmpty()
-  addresedBy: string;
+  addressedBy: string;
 }
 
 export class LeadDTO {

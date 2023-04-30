@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Lead, LeadDocument } from './lead.schema';
 import { Model, PaginateModel, PaginateResult } from 'mongoose';
 import { ILeadRepository } from 'src/lead/interface/ILeadRepository';
-import { ILead } from 'src/lead/interface/ILead';
+import { ILead, IVisit } from 'src/lead/interface/ILead';
 import { CLASS } from 'src/common/types';
 import { IPaginate } from 'src/common/interface/IPaginate';
 import { extractMetaInfoFromPaginateModel } from '../utils';
@@ -49,6 +49,50 @@ export class MongoLeadRepository implements ILeadRepository {
       { new: true },
     );
     return await this.transformFromModel(updatedDocument);
+  }
+
+  async createVisit(leadId: string, visit: IVisit): Promise<IVisit> {
+    const savedDocument = await this.model.findOneAndUpdate(
+      { leadId: leadId },
+      { $push: { visits: visit } },
+      { new: true },
+    );
+    return savedDocument.visits[savedDocument.visits.length - 1];
+  }
+
+  async updateVisit(
+    leadId: string,
+    visitId: string,
+    visit: Partial<IVisit>,
+  ): Promise<IVisit> {
+    await this.model.findOneAndUpdate(
+      { leadId: leadId, 'visits.visitId': visitId },
+      { $set: { 'visits.$': { ...visit } } },
+      { new: true },
+    );
+    return this.getVisit(visitId);
+  }
+
+  async deleteVisit(leadId: string, visitId: string): Promise<IVisit[]> {
+    const updatedLead = await this.model.findOneAndUpdate(
+      { leadId: leadId },
+      { $pull: { visits: { visitId: visitId } } },
+      { new: true },
+    );
+    return updatedLead.visits;
+  }
+
+  async getVisits(leadId: string): Promise<IVisit[]> {
+    const visits = await this.model.findOne({ leadId: leadId }, { visits: 1 });
+    return visits.visits;
+  }
+
+  async getVisit(visitId: string): Promise<IVisit> {
+    const visits = await this.model.findOne(
+      { 'visits.visitId': visitId },
+      { 'visits.$': 1 },
+    );
+    return visits.visits[0];
   }
 
   async transformFromPaginatedModel(

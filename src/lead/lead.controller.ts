@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   Param,
@@ -8,11 +9,12 @@ import {
   Put,
 } from '@nestjs/common';
 import { LeadService } from './lead.service';
-import { ILead } from './interface/ILead';
+import { ILead, IVisit } from './interface/ILead';
 import { IPaginate } from 'src/common/interface/IPaginate';
-import { LeadDTO } from './DTO/LeadDTO';
+import { LeadDTO, VisitDTO } from './DTO/LeadDTO';
 import { UpdateLeadDTO } from './DTO/UpdateLeadDTO';
 import { QueryRequired } from 'src/common/decorators/requiredquery.decorator';
+import { UpdateVisitDTO } from './DTO/UpdateVisitDTO';
 
 @Controller('lead')
 export class LeadController {
@@ -58,5 +60,42 @@ export class LeadController {
   ): Promise<ILead> {
     const savedlead = await this.service.updateLead(leadId, lead);
     return savedlead;
+  }
+
+  @Post('/:leadId/visit')
+  async createVisit(
+    @Param('leadId') leadId: string,
+    @Body() visit: VisitDTO,
+  ): Promise<IVisit> {
+    const savedVisit = await this.service.createVisit(leadId, visit);
+    return savedVisit;
+  }
+
+  @Put('/:leadId/visit/:visitId')
+  async updateVisit(
+    @Param('leadId') leadId: string,
+    @Param('visitId') visitId: string,
+    @Body() visit: UpdateVisitDTO,
+  ): Promise<IVisit> {
+    return await this.service.updateVisit(leadId, visitId, visit);
+  }
+
+  @Delete('/:leadId/visit/:visitId')
+  async deleteVisit(
+    @Param('leadId') leadId: string,
+    @Param('visitId') visitId: string,
+  ): Promise<IVisit[]> {
+    const savedVisit = await this.service.deleteVisit(leadId, visitId);
+    return savedVisit;
+  }
+
+  @Get('/:leadId/visits')
+  async getVisits(@Param('leadId') leadId: string): Promise<IVisit[]> {
+    return await this.service.getVisits(leadId);
+  }
+
+  @Get('/visit/:visitId')
+  async getVisit(@Param('visitId') visitId: string): Promise<IVisit> {
+    return await this.service.getVisit(visitId);
   }
 }

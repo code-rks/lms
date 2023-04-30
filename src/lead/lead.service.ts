@@ -1,11 +1,12 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ILeadRepository } from './interface/ILeadRepository';
-import { ILead } from './interface/ILead';
+import { ILead, IVisit } from './interface/ILead';
 import { v4 as uuidv4 } from 'uuid';
 import { IPaginate } from 'src/common/interface/IPaginate';
-import { LeadDTO } from './DTO/LeadDTO';
+import { LeadDTO, VisitDTO } from './DTO/LeadDTO';
 import { transformLeadDtoToInterface } from './transformers/lead.transform';
 import { UpdateLeadDTO } from './DTO/UpdateLeadDTO';
+import { transformVisitDtoToInterface } from './transformers/visit.transform';
 
 @Injectable()
 export class LeadService {
@@ -41,5 +42,30 @@ export class LeadService {
 
   updateLead = async (leadId: string, lead: UpdateLeadDTO): Promise<ILead> => {
     return await this.repository.updateLead(leadId, { ...lead });
+  };
+
+  createVisit = async (leadId: string, visit: VisitDTO): Promise<IVisit> => {
+    const visitToSave = transformVisitDtoToInterface(visit);
+    return await this.repository.createVisit(leadId, visitToSave);
+  };
+
+  deleteVisit = async (leadId: string, visitId: string): Promise<IVisit[]> => {
+    return await this.repository.deleteVisit(leadId, visitId);
+  };
+
+  getVisits = async (leadId: string): Promise<IVisit[]> => {
+    return await this.repository.getVisits(leadId);
+  };
+
+  getVisit = async (visitId: string): Promise<IVisit> => {
+    return await this.repository.getVisit(visitId);
+  };
+
+  updateVisit = async (
+    leadId: string,
+    visitId: string,
+    visit: Partial<IVisit>,
+  ) => {
+    return await this.repository.updateVisit(leadId, visitId, visit);
   };
 }

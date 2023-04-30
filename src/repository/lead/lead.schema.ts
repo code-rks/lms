@@ -4,10 +4,13 @@ import * as paginate from 'mongoose-paginate-v2';
 export type LeadDocument = Lead & Document;
 
 export class Visit {
-  @Prop()
+  @Prop({ required: true, unique: true })
+  visitId: string;
+
+  @Prop({ required: true })
   visitDate: Date; //timstamp
 
-  @Prop()
+  @Prop({ required: true })
   notes: string;
 
   @Prop()
@@ -21,7 +24,7 @@ export class Parent {
   @Prop()
   emailId: string; //
 
-  @Prop()
+  @Prop({ required: true })
   contactNumber: string;
 
   @Prop()
@@ -56,10 +59,10 @@ export class Lead {
   @Prop()
   residentialAddress: string;
 
-  @Prop()
+  @Prop({ required: true })
   father: Parent;
 
-  @Prop()
+  @Prop({ required: true })
   mother: Parent;
 
   @Prop()
